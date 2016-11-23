@@ -6,6 +6,8 @@ from . import views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.conf.urls import include
+from djgeojson.views import GeoJSONLayerView
+from .models import Data
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -17,5 +19,8 @@ urlpatterns = [
             form_class=UserCreationForm,
             success_url='/'
     ), name='register'),
+    url(r'^data.geojson$', GeoJSONLayerView.as_view(model=Data), name='data'),
+    url(r'^addElement/$', views.addElement, name='addElement'),
+    url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),
 #    url('^accounts/', include('django.contrib.auth.urls')),
 ]

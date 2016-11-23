@@ -15,12 +15,14 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0^q9&^oblkc28287hb-2ub3pnyo9nub@-@=m56)g*mn_u8m@14'
+try:
+    from crowdsourcing.secret_settings import *
+except ImportError:
+    try:
+        SECRET_KEY = os.environ["SECRET_KEY"]
+        ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split()
+    except KeyError:
+        print("Please create a secret_settings.py file following instructions from secret_settings.py.template")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'leaflet',
+    'djgeojson',
+    'crowdsourcing',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -118,5 +123,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = (
+  os.path.join(BASE_DIR, 'static/'),
+)
 
 LOGIN_REDIRECT_URL = 'home'
