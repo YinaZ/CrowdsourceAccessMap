@@ -8,6 +8,26 @@ from .forms import UserForm, AuthenticationForm
 import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 
+def register(request):
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = UserForm(data=request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            try:
+                user = CustomUser.objects.get(username=request.POST['username'])
+            except CustomUser.DoesNotExist:
+                user = CustomUser()
+                user.username = request.POST['username']
+                user.age = request.POST['age']
+                print user.username
+                user.save()
+                django_login(request, user)
+                return redirect('/')
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = UserForm()
+    return render(request, 'register.html', {'form': form})
 
 def login(request):
     if request.method == 'POST':
@@ -16,7 +36,7 @@ def login(request):
         # check whether it's valid:
         if form.is_valid():
             try: 
-                user = CustomUser.objects.get(name=request.POST['name'])
+                user = CustomUser.objects.get(username=request.POST['username'])
             except CustomUser.DoesNotExist:
                 user = None
             if user is not None:
@@ -28,17 +48,14 @@ def login(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-def leaflet(request):
-    template = loader.get_template('crowdsourcing/leaflet.html')
+def logout(request):
+    django_logout(request)
+    template  = loader.get_template('logged_out.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
-def logout(request):
-    """
-    Log out view
-    """
-    django_logout(request)
-    template  = loader.get_template('logged_out.html')
+def leaflet(request):
+    template = loader.get_template('crowdsourcing/leaflet.html')
     context = {}
     return HttpResponse(template.render(context, request))
 

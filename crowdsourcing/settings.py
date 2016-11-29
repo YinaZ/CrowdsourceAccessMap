@@ -129,4 +129,5 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'crowdsourcing.CustomUser'
+AUTH_USER_MODEL_USERNAME_FIELD = 'name'
 LOGIN_REDIRECT_URL = 'home'

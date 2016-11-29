@@ -14,11 +14,7 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^leaflet/$', views.leaflet, name='leaflet'),
-    url(r'^register/$', CreateView.as_view(
-            template_name='register.html',
-            form_class=UserForm,
-            success_url='/'
-    ), name='register'),
+    url(r'^register/$', views.register, name='register'),
     url(r'^data.geojson$', GeoJSONLayerView.as_view(model=Data), name='data'),
     url(r'^addElement/$', views.addElement, name='addElement'),
     url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),

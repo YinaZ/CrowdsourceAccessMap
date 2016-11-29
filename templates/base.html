@@ -8,12 +8,12 @@
   <header>
     <h1>CrowdsourceAccessMap</h1>
     {% if user.is_authenticated %}
-      Hi {{ user.name }}!
+      Hi {{ user.username }}!
       <a href="{% url 'logout' %}">logout</a>
     {% else %}
       <a href="{% url 'login' %}">login</a>
     {% endif %}
-      
+    <a href="{% url 'home' %}">home</a>      
     {% block head_block %}
     {% endblock %}
   </header>
