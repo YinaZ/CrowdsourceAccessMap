@@ -8,7 +8,7 @@
   <header>
     <h1>CrowdsourceAccessMap</h1>
     {% if user.is_authenticated %}
-      Hi {{ user.username }}!
+      Hi {{ user.name }}!
       <a href="{% url 'logout' %}">logout</a>
     {% else %}
       <a href="{% url 'login' %}">login</a>
