@@ -8,6 +8,16 @@ from .forms import UserForm, AuthenticationForm
 import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 
+def ranking(request):
+    template = loader.get_template('ranking.html')
+
+    users = []
+    for user in CustomUser.objects.all().order_by('-rank'):
+        users.append(user)
+    context = {'users': users, }
+    return HttpResponse(template.render(context, request))
+
+
 def register(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:

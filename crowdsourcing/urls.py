@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'^data.geojson$', GeoJSONLayerView.as_view(model=Data), name='data'),
     url(r'^addElement/$', views.addElement, name='addElement'),
     url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),
+    url(r'^ranking/$', views.ranking, name='ranking'),
+
 #    url('^accounts/', include('django.contrib.auth.urls')),
 ]
