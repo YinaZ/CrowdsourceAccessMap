@@ -20,7 +20,6 @@ def register(request):
                 user = CustomUser()
                 user.username = request.POST['username']
                 user.age = request.POST['age']
-                print user.username
                 user.save()
                 django_login(request, user)
                 return redirect('/')
