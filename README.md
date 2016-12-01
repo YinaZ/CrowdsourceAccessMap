@@ -10,6 +10,11 @@
     python manage.py makemigrations
     python manage.py migrate
     python manage.py runserver
+    
+    How to load interactions from csv file into database (one time):
+    python manage.py shell
+    from crowdsourcing.utils import get_intersection
+    get_intersection()
 
 ## Reference
 
