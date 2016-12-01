@@ -32,14 +32,14 @@
         var bing = new L.BingLayer("AkErn6IFlYKIm4Mp34p-ayPl_zTVk6LoUyp4J9HftaB_KJdDkBV6MmOV4eWKciNF", {type: imagerySet});
         map.addLayer(bing);
         var dataurl = '{% url "data" %}';
-
-	fetch(dataurl)
-          .then(function(resp) {
-            return resp.json();
-           })
-           .then(function(data) {
-            L.geoJson(data).addTo(map);
-      	  });
+        var marker = L.marker([0, 0]).addTo(map);
+	//fetch(dataurl)
+        //  .then(function(resp) {
+        //    return resp.json();
+        //   })
+        //   .then(function(data) {
+        //    L.geoJson(data).addTo(map);
+      	//  });
 
 	var drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);

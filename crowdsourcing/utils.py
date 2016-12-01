@@ -11,7 +11,7 @@ def get_intersection():
             if (row[0] == 'lat'):
                 continue
             intersection = Intersection()
-            geom = {'type': 'Point', 'coordinates': [row[0], row[1]]}
+            geom = {'type': 'Point', 'coordinates': [row[1], row[0]]}
             intersection.geom = geom
             intersection.rank = row[2]
             intersection.save()

@@ -28,7 +28,8 @@ function getCoordinates() {
 }
 
 function changeCoordinates(json){
-        lat = json['coordinates'][1];
-        lon = json['coordinates'][0];
-        map.setView([lat, lon], 18);
+        var lat = json['coordinates'][1];
+        var lng = json['coordinates'][0];
+        marker.setLatLng([lat, lng]).update();
+        map.setView([lat, lng], 18);
 }
