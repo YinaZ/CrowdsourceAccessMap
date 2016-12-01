@@ -1,7 +1,6 @@
 from djgeojson.fields import PolygonField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from adaptor.model import CsvModel
 
 class CustomUser(AbstractUser):
     age = models.IntegerField()
@@ -17,14 +16,3 @@ class Data(models.Model):
     geom = PolygonField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     intersection = models.ForeignKey(Intersection, on_delete=models.CASCADE)
-
-
-class ItrCsvModel(CsvModel):
-    lat = models.FloatField()
-    lon = models.FloatField()
-    score = models.IntegerField()
-
-    class Meta:
-        delimiter = ";"
-
-

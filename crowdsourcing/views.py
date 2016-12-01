@@ -7,6 +7,8 @@ from .models import Data, CustomUser, Intersection
 from .forms import UserForm, AuthenticationForm
 import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
+from .settings import MEDIA_ROOT
+import csv
 
 
 def ranking(request):
