@@ -1,0 +1,15 @@
+.idea
+.DS_Store
+crowdsourcing/__init__.pyc
+crowdsourcing/__pycache__/
+crowdsourcing/forms.pyc
+crowdsourcing/migrations/
+crowdsourcing/models.pyc
+crowdsourcing/secret_settings.py
+crowdsourcing/secret_settings.pyc
+crowdsourcing/settings.pyc
+crowdsourcing/urls.pyc
+crowdsourcing/views.pyc
+crowdsourcing/wsgi.pyc
+db.sqlite3
+crowdsourcing/secret_settings.py.template
