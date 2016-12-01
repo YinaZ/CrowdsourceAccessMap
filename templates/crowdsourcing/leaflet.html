@@ -21,11 +21,11 @@
 
 {% block content %}
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-	<button id="changeColor">Rectangle -> Blue</button>
-	<button id="changeLocation">Change Bounds</button>
+	<button id="getQuestion">Get next question</button>
 	<button id="showLocation">Show Bounds</button>
-        <script src="{% static "upload.js" %}"></script>
+        <script src="{% static "scripts.js" %}"></script>
 	<script>
+        var intersection_id;
 	map = new L.Map('map', {center: new L.LatLng(47.6553, -122.3035), zoom: 15 });
 	var imagerySet = "Aerial"; // AerialWithLabels | Birdseye | BirdseyeWithLabels | Road
         var bing = new L.BingLayer("AkErn6IFlYKIm4Mp34p-ayPl_zTVk6LoUyp4J9HftaB_KJdDkBV6MmOV4eWKciNF", {type: imagerySet});
@@ -45,6 +45,7 @@
 
         // Set the title to show on the polygon button
         L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
+
 
         var drawControl = new L.Control.Draw({
             position: 'topright',
@@ -71,7 +72,6 @@
             drawnItems.addLayer(layer);
             console.log("Add " + type + " layer");
             var geoJson = layer.toGeoJSON();
-
             var geo = geoJson.geometry;
             var data = JSON.stringify(geo);
             console.log("data: " + data);
@@ -106,18 +106,11 @@
             console.log("Edited " + countOfEditedLayers + " layers");
         });
 
-        L.DomUtil.get('changeColor').onclick = function () {
-            drawControl.setDrawingOptions({ rectangle: { shapeOptions: { color: '#004a80' } } });
-	};
-			
 
-        L.DomUtil.get('changeLocation').onclick = function () {
-            map.fitBounds([
-                [40.712, -74.227],
-		[40.714, -74.225]
-		], 18);
-        };		
-
+        L.DomUtil.get('getQuestion').onclick = function () {
+            getCoordinates();
+            
+        };
         L.DomUtil.get('showLocation').onclick = function () {
             console.log("SW: " + map.getBounds().getSouthWest());
             console.log("NE: " + map.getBounds().getNorthEast());
