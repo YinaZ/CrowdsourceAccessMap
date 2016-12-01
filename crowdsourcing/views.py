@@ -3,11 +3,12 @@ from django.http import HttpResponse
 from django.template import loader
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .models import Data, CustomUser, Intersection, ItrCsvModel
+from .models import Data, CustomUser, Intersection
 from .forms import UserForm, AuthenticationForm
 import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from .settings import MEDIA_ROOT
+import csv
 
 
 def ranking(request):
@@ -136,11 +137,11 @@ def deleteElement(request):
     user.save()
     return HttpResponse("OK")
 
-@csrf_exempt
-def get_intersection(request):
-    csv_file_name = 'intersection.csv'
-    path = MEDIA_ROOT + csv_file_name
-    itr_csv_list = ItrCsvModel.import_data(data = open(path))
 
-    for coordinate in itr_csv_list:
-        print "lat: " + coordinate.lat + ", lon:  " + coordinate.lon + ", score: " + coordinate.score
+def get_intersection():
+    csv_file_name = '/intersection.csv'
+    path = MEDIA_ROOT + csv_file_name
+    with open(path) as intersections:
+        read_csv = csv.reader(intersections, delimiter=',')
+        for row in read_csv:
+            print (row)
