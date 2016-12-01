@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import loader
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .models import Data, CustomUser, Intersection, ItrCsvModel
+from .models import Data, CustomUser, Intersection
 from .forms import UserForm, AuthenticationForm
 import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
-from .settings import MEDIA_ROOT
 
 
 def ranking(request):
@@ -70,7 +69,6 @@ def leaflet(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-@csrf_exempt
 def getCoordinates(request):
     if request.method != 'GET':
         return redirect('/')
@@ -92,7 +90,6 @@ def getCoordinates(request):
     response['id'] = intersection.id
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-@csrf_exempt
 def addElement(request):
     if request.method != 'POST':
         return redirect('home')
@@ -113,7 +110,6 @@ def addElement(request):
     user.save()
     return HttpResponse("OK")
 
-@csrf_exempt
 def deleteElement(request):
     if request.method != 'POST':
         return redirect('home')
@@ -135,12 +131,3 @@ def deleteElement(request):
     user.rank -= intersection.rank
     user.save()
     return HttpResponse("OK")
-
-@csrf_exempt
-def get_intersection(request):
-    csv_file_name = 'intersection.csv'
-    path = MEDIA_ROOT + csv_file_name
-    itr_csv_list = ItrCsvModel.import_data(data = open(path))
-
-    for coordinate in itr_csv_list:
-        print "lat: " + coordinate.lat + ", lon:  " + coordinate.lon + ", score: " + coordinate.score

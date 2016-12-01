@@ -2,9 +2,6 @@ from djgeojson.fields import PolygonField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from adaptor.model import CsvModel
-from django.db.models import FloatField
-from django.db.models import IntegerField
-
 
 class CustomUser(AbstractUser):
     age = models.IntegerField()
@@ -23,9 +20,9 @@ class Data(models.Model):
 
 
 class ItrCsvModel(CsvModel):
-    lat = FloatField()
-    lon = FloatField()
-    score = IntegerField()
+    lat = models.FloatField()
+    lon = models.FloatField()
+    score = models.IntegerField()
 
     class Meta:
         delimiter = ";"
