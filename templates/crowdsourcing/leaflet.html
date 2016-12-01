@@ -21,11 +21,11 @@
 
 {% block content %}
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-	<button id="answer">Answer</button>
 	<button id="getQuestion">Get next question</button>
 	<button id="showLocation">Show Bounds</button>
         <script src="{% static "scripts.js" %}"></script>
 	<script>
+        var intersection_id;
 	map = new L.Map('map', {center: new L.LatLng(47.6553, -122.3035), zoom: 15 });
 	var imagerySet = "Aerial"; // AerialWithLabels | Birdseye | BirdseyeWithLabels | Road
         var bing = new L.BingLayer("AkErn6IFlYKIm4Mp34p-ayPl_zTVk6LoUyp4J9HftaB_KJdDkBV6MmOV4eWKciNF", {type: imagerySet});
@@ -47,6 +47,24 @@
         L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
 
 
+        var drawControl = new L.Control.Draw({
+            position: 'topright',
+            draw: {
+                polyline: {
+                    metric: true
+                },
+                polygon: false,
+                circle: false,
+                marker: false
+            },
+            edit: {
+                featureGroup: drawnItems,
+                remove: true,
+                edit: false
+            }
+        });
+        map.addControl(drawControl);
+
         map.on('draw:created', function (e) {
             var type = e.layerType,
                 layer = e.layer;
@@ -54,7 +72,6 @@
             drawnItems.addLayer(layer);
             console.log("Add " + type + " layer");
             var geoJson = layer.toGeoJSON();
-
             var geo = geoJson.geometry;
             var data = JSON.stringify(geo);
             console.log("data: " + data);
@@ -89,73 +106,10 @@
             console.log("Edited " + countOfEditedLayers + " layers");
         });
 
-        L.DomUtil.get('answer').onclick = function () {
-	    var answer = confirm("Is there a safe crossing?");
-            if (answer) {
-                alert("Thank you!");
-                return;
-            }
-            answer = confirm("Is there an unsafe crossing marked as wrong?");
-            if (answer) {
-                alert("Please draw a rectangle around that crossing!");
-                try { 
-                    map.removeControl(drawControl); 
-                } 
-                catch (err){ 
-                    console.log('no draw control to remove'); 
-                };
-                var drawControl = new L.Control.Draw({
-                    position: 'topright',
-                    draw: {
-                        polyline: false,
-                        rectangle: true,
-                        polygon: false,
-                        circle: false,
-                        marker: false
-                    },
-                    edit: {
-                        featureGroup: drawnItems,
-                        remove: true,
-                        edit: false
-                    }
-                });
-                map.addControl(drawControl);
-                return;
-            }
-            answer = confirm("Is there a safe crossing that's not marked?");
-            if (answer) {
-                alert("Please draw a line along that crossing!");
-                try {
-                    map.removeControl(drawControl);
-                }
-                catch (err){
-                    console.log('no draw control to remove');
-                };
-                var drawControl = new L.Control.Draw({
-                    position: 'topright',
-                    draw: {
-                        polyline: {
-                            metric: true
-                        },
-                        rectangle: false,
-                        polygon: false,
-                        circle: false,
-                        marker: false
-                    },
-                    edit: {
-                        featureGroup: drawnItems,
-                        remove: true,
-                        edit: false
-                    }
-                });
-                map.addControl(drawControl);
-                return;
-            }
-        };
-			
 
         L.DomUtil.get('getQuestion').onclick = function () {
             getCoordinates();
+            
         };
         L.DomUtil.get('showLocation').onclick = function () {
             console.log("SW: " + map.getBounds().getSouthWest());

@@ -83,17 +83,32 @@ def getCoordinates(request):
     for intersection in (Intersection.objects.all()):
         if (not (Data.objects.filter(user__username=username, intersection=intersection))):
             response['coordinates'] = intersection.geom['coordinates']
+            response['id'] = intersection.id
             return HttpResponse(json.dumps(response), content_type="application/json")
-    response['coordinates'] = Intersection.objects.all()[0].geom['coordinates']
+    intersection = Intersection.objects.all()[0]
+    response['coordinates'] = intersection.geom['coordinates']
+    response['id'] = intersection.id
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 @csrf_exempt
 def addElement(request):
     if request.method != 'POST':
         return redirect('home')
+    id = request.META['HTTP_INTERSECTION']
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+    else:
+        return redirect('/')
+    intersection = Intersection.objects.filter(id=id)[0]
+    user = CustomUser.objects.filter(username=username)[0]
     data = Data()
     data.geom = json.loads(request.body)
+    data.user = user;
+    data.intersection = intersection;
     data.save()
+    user.rank += intersection.rank
+    user.save()
     return HttpResponse("OK")
 
 @csrf_exempt
@@ -101,8 +116,20 @@ def deleteElement(request):
     if request.method != 'POST':
         return redirect('home')
     body = json.loads(request.body)
-    data = Data.objects.filter(geom=body)
+
+    id = request.META['HTTP_INTERSECTION']
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+    else:
+        return redirect('/')
+    intersection = Intersection.objects.filter(id=id)[0]
+    user = CustomUser.objects.filter(username=username)[0]
+
+    data = Data.objects.filter(geom=body, user=user, intersection=intersection)
     if not data:
         return HttpResponseBadRequest()
     data.delete()
+    user.rank -= intersection.rank
+    user.save()
     return HttpResponse("OK")
