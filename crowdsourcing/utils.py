@@ -8,8 +8,10 @@ def get_intersection():
     with open(path) as intersections:
         read_csv = csv.reader(intersections, delimiter=',')
         for row in read_csv:
-            if (row[0] == 'lat'):
+            if row[0] == 'lat':
                 continue
+            if row[2] <= 2:
+                break
             intersection = Intersection()
             geom = {'type': 'Point', 'coordinates': [row[1], row[0]]}
             intersection.geom = geom
