@@ -8,6 +8,8 @@ from django.conf.urls import include
 from djgeojson.views import GeoJSONLayerView
 from .models import Data, CustomUser, Intersection
 from .forms import UserForm
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -20,6 +22,6 @@ urlpatterns = [
     url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),
     url(r'^ranking/$', views.ranking, name='ranking'),
     url(r'^getCoordinates/$', views.getCoordinates, name='getCoordinates'),
-
 #    url('^accounts/', include('django.contrib.auth.urls')),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
