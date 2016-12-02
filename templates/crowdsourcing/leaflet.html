@@ -110,7 +110,16 @@
 
         L.DomUtil.get('getQuestion').onclick = function () {
             getCoordinates();
-            
+            var answer = confirm("Is this marker on an intersection?");
+            if (!answer) {
+                badIntersection();
+            }
+            answer = confirm("Thank you! One more question?);
+            if (answer) {
+                getCoordinates();
+            } else {
+                location.reload;
+            }
         };
         L.DomUtil.get('showLocation').onclick = function () {
             console.log("SW: " + map.getBounds().getSouthWest());

@@ -1,3 +1,12 @@
+function badIntersection(){
+        var xhr = new XMLHttpRequest();
+        var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+        xhr.open('POST', '../badIntersection/', true);
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        xhr.setRequestHeader('intersection', intersection_id);
+        xhr.send();
+}
+
 function addElement(json){
         var xhr = new XMLHttpRequest();
         var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
