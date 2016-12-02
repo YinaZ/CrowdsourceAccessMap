@@ -41,7 +41,7 @@ function changeCoordinates(json){
         var lng = json['coordinates'][0];
         marker.setLatLng([lat, lng]).update();
         map.setView([lat, lng], 18);
-
+        
         // Add a layer for the sidewalks
         var sidewalks = L.geoJson();
         sidewalks.addTo(map);
@@ -55,5 +55,7 @@ function changeCoordinates(json){
         req.done(function (data) {
         // When the data comes back, update the sidewalks layer
             sidewalks.addData(data);
-         });
+            
+        });
+
 }

@@ -92,6 +92,26 @@ def getCoordinates(request):
     response['id'] = intersection.id
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+def badIntersection(request):
+    if request.method != 'POST':
+        return redirect('home')
+    id = request.META['HTTP_INTERSECTION']
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+    else:
+        return redirect('/')
+    intersection = Intersection.objects.filter(id=id)[0]
+    user = CustomUser.objects.filter(username=username)[0]
+    data = Data()
+    data.user = user
+    data.intersection = intersection
+    data.correct = False
+    data.save()
+    user.rank += intersection.rank
+    user.save()
+    return HttpResponse("OK")
+
 def addElement(request):
     if request.method != 'POST':
         return redirect('home')
@@ -105,8 +125,8 @@ def addElement(request):
     user = CustomUser.objects.filter(username=username)[0]
     data = Data()
     data.geom = json.loads(request.body)
-    data.user = user;
-    data.intersection = intersection;
+    data.user = user
+    data.intersection = intersection
     data.save()
     user.rank += intersection.rank
     user.save()

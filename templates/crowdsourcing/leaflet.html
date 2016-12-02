@@ -27,6 +27,8 @@
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 	<button id="getQuestion">Get next question</button>
 	<button id="showLocation">Show Bounds</button>
+        <button id="badIntersection">Marker is not on an intersection</button>
+
         <script src="{% static "scripts.js" %}"></script>
 	<script>
         var intersection_id;
@@ -113,17 +115,13 @@
 
         L.DomUtil.get('getQuestion').onclick = function () {
             getCoordinates();
-            var answer = confirm("Is this marker on an intersection?");
-            if (!answer) {
-                badIntersection();
-            }
-            answer = confirm("Thank you! One more question?);
-            if (answer) {
-                getCoordinates();
-            } else {
-                location.reload;
-            }
         };
+
+        L.DomUtil.get('badIntersection').onclick = function () {
+            badIntersection();
+            getCoordinates();
+        };
+
         L.DomUtil.get('showLocation').onclick = function () {
             console.log("SW: " + map.getBounds().getSouthWest());
             console.log("NE: " + map.getBounds().getNorthEast());

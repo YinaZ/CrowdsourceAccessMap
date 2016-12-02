@@ -13,6 +13,7 @@ class Intersection(models.Model):
 
 
 class Data(models.Model):
-    geom = PolygonField()
+    geom = PolygonField(default=None)
+    correct = models.BooleanField(default=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     intersection = models.ForeignKey(Intersection, on_delete=models.CASCADE)

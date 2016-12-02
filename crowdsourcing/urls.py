@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),
     url(r'^ranking/$', views.ranking, name='ranking'),
     url(r'^getCoordinates/$', views.getCoordinates, name='getCoordinates'),
+    url(r'^badIntersection/$', views.badIntersection, name='badIntersection'),
 #    url('^accounts/', include('django.contrib.auth.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
