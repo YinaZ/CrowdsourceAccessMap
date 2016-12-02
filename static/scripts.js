@@ -41,4 +41,19 @@ function changeCoordinates(json){
         var lng = json['coordinates'][0];
         marker.setLatLng([lat, lng]).update();
         map.setView([lat, lng], 18);
+
+        // Add a layer for the sidewalks
+        var sidewalks = L.geoJson();
+        sidewalks.addTo(map);
+
+        // bbox for selected area
+        var bbox = map.getBounds().toBBoxString();
+        var apiUrl = 'https://accessmapseattle.com/api/v2/sidewalks.geojson?bbox=';
+
+        // Make the request (jQuery for simplicity)
+        var req = $.get(apiUrl + bbox);
+        req.done(function (data) {
+        // When the data comes back, update the sidewalks layer
+            sidewalks.addData(data);
+         });
 }
