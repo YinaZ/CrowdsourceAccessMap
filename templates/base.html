@@ -40,12 +40,14 @@
     {% if user.is_authenticated %}
         Hi {{ user.username }}!
         <a href="{% url 'logout' %}">logout</a>
+        </br>
+        <button onclick="location.href='/leaflet'" id="leaflet" class="btn btn-primary btn-lg">Play</button>
     {% else %}
-        <a href="{% url 'login' %}">login</a>
+        <button onclick="location.href='/login'" id="login" class="btn btn-primary btn-lg">login</button>
+    <button onclick="location.href='/register'" id="register" class="btn btn-primary btn-lg">register</button>
     {% endif %}
-    <a href="{% url 'ranking' %}">ranking</a>
-    <a href="{% url 'hrRanking' %}">hourly ranking</a>
-    <a href="{% url 'home' %}">home</a>
+    <button onclick="location.href='/hrRanking'" id="hr_ranking" class="btn btn-primary btn-lg">Hourly Ranking</button>
+    <button onclick="location.href='/ranking'" id="ranking" class="btn btn-primary btn-lg">Overall Ranking</button>
     {% block head_block %}
     {% endblock %}
 </header>
