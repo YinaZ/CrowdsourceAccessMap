@@ -39,7 +39,7 @@
 {% block content %}
     <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
     <button id="getQuestion" class="btn btn-primary btn-lg">Get next question</button>
-    <button id="showLocation" class="btn btn-primary btn-lg">Show Bounds</button>
+    {#    <button id="showLocation" class="btn btn-primary btn-lg">Show Bounds</button>#}
     <button id="badIntersection" class="btn btn-primary btn-lg">Marker is not on an intersection</button>
     <button id="drawCrossing" class="btn btn-primary btn-lg">Draw crossing</button>
 
@@ -146,7 +146,7 @@
         };
 
         L.DomUtil.get('drawCrossing').onclick = function () {
-             polylineDrawer.enable();
+            polylineDrawer.enable();
         };
 
 
