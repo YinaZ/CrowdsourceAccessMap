@@ -20,6 +20,19 @@ def ranking(request):
     context = {'users': users, }
     return HttpResponse(template.render(context, request))
 
+def hrRanking(request):
+    template = loader.get_template('hourly_ranking.html')
+    users = []
+    now = timezone.localtime(timezone.now())
+    for user in CustomUser.objects.all():
+        user.hr_rank = 0
+        for data in Data.objects.filter(user=user, date__hour=now.hour, date__day=now.day, date__month=now.month, date__year=now.year):
+            user.hr_rank += data.intersection.rank
+        user.save()
+    for user in CustomUser.objects.all().order_by('-hr_rank'):
+        users.append(user)
+    context = {'users': users, }
+    return HttpResponse(template.render(context, request))
 
 def register(request):
     if request.method == 'POST':

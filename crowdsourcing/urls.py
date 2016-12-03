@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^addElement/$', views.addElement, name='addElement'),
     url(r'^deleteElement/$', views.deleteElement, name='deleteElement'),
     url(r'^ranking/$', views.ranking, name='ranking'),
+    url(r'^hrRanking/$', views.hrRanking, name='hrRanking'),
     url(r'^getCoordinates/$', views.getCoordinates, name='getCoordinates'),
 #    url('^accounts/', include('django.contrib.auth.urls')),
 ]

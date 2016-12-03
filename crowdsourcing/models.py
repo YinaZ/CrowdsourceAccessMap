@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     age = models.IntegerField()
     rank = models.IntegerField(default=0)
+    hr_rank = models.IntegerField(default=0)
 
 class Intersection(models.Model):
     geom = GeometryField()
