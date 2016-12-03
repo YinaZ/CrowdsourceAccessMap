@@ -9,7 +9,7 @@ import json
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from .settings import MEDIA_ROOT
 import csv
-
+from django.utils import timezone
 
 def ranking(request):
     template = loader.get_template('ranking.html')
@@ -80,8 +80,6 @@ def getCoordinates(request):
     else:
         return redirect('/')
     response = {}
-    # data = Data.objects.all()[0]
-    # response['coordinates'] = data.geom['coordinates']
     for intersection in (Intersection.objects.all()):
         if (not (Data.objects.filter(user__username=username, intersection=intersection))):
             response['coordinates'] = intersection.geom['coordinates']
@@ -92,30 +90,11 @@ def getCoordinates(request):
     response['id'] = intersection.id
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-def badIntersection(request):
-    if request.method != 'POST':
-        return redirect('home')
-    id = request.META['HTTP_INTERSECTION']
-    username = None
-    if request.user.is_authenticated():
-        username = request.user.username
-    else:
-        return redirect('/')
-    intersection = Intersection.objects.filter(id=id)[0]
-    user = CustomUser.objects.filter(username=username)[0]
-    data = Data()
-    data.user = user
-    data.intersection = intersection
-    data.correct = False
-    data.save()
-    user.rank += intersection.rank
-    user.save()
-    return HttpResponse("OK")
-
 def addElement(request):
     if request.method != 'POST':
         return redirect('home')
-    id = request.META['HTTP_INTERSECTION']
+    body = json.loads(request.body)
+    id = body['intersection']
     username = None
     if request.user.is_authenticated():
         username = request.user.username
@@ -124,9 +103,14 @@ def addElement(request):
     intersection = Intersection.objects.filter(id=id)[0]
     user = CustomUser.objects.filter(username=username)[0]
     data = Data()
-    data.geom = json.loads(request.body)
+    if (body['correct'] == 1):
+        data.geom = json.loads(body['geom'])
+    else:
+        data.correct = False
+    data.sidewalks = body['sidewalks']
     data.user = user
     data.intersection = intersection
+    data.date = timezone.now()
     data.save()
     user.rank += intersection.rank
     user.save()
@@ -136,7 +120,6 @@ def deleteElement(request):
     if request.method != 'POST':
         return redirect('home')
     body = json.loads(request.body)
-
     id = request.META['HTTP_INTERSECTION']
     username = None
     if request.user.is_authenticated():
@@ -145,7 +128,6 @@ def deleteElement(request):
         return redirect('/')
     intersection = Intersection.objects.filter(id=id)[0]
     user = CustomUser.objects.filter(username=username)[0]
-
     data = Data.objects.filter(geom=body, user=user, intersection=intersection)
     if not data:
         return HttpResponseBadRequest()

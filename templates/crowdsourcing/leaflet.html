@@ -31,6 +31,9 @@
 
         <script src="{% static "scripts.js" %}"></script>
 	<script>
+        var correct;
+        var sidewalkData;
+        var input;
         var intersection_id;
 	map = new L.Map('map', {center: new L.LatLng(47.6553, -122.3035), zoom: 15 });
 	var imagerySet = "Aerial"; // AerialWithLabels | Birdseye | BirdseyeWithLabels | Road
@@ -79,9 +82,10 @@
             console.log("Add " + type + " layer");
             var geoJson = layer.toGeoJSON();
             var geo = geoJson.geometry;
-            var data = JSON.stringify(geo);
-            console.log("data: " + data);
-            addElement(data);
+            input = JSON.stringify(geo);
+            console.log("data: " + input);
+            correct = true;
+            addElement();
 
         });
 
@@ -93,23 +97,12 @@
                 countOfDeletedLayers++;
                 var geoJson = layer.toGeoJSON();
                 var geo = geoJson.geometry;
-                var data = JSON.stringify(geo);
-                console.log("data: " + data);
-                deleteElement(data);
+                input = JSON.stringify(geo);
+                console.log("data: " + input);
+                deleteElement();
             });
             console.log("Deleted " + countOfDeletedLayers + " layers");
-});
 
-
-        map.on('draw:edited', function (e) {
-            var layers = e.layers;
-            var countOfEditedLayers = 0;
-            layers.eachLayer(function(layer) {
-                countOfEditedLayers++;
-                var geoJson = layer.toGeoJSON();
-                console.log("Can get geo JSON now");
-            });
-            console.log("Edited " + countOfEditedLayers + " layers");
         });
 
 
@@ -118,7 +111,8 @@
         };
 
         L.DomUtil.get('badIntersection').onclick = function () {
-            badIntersection();
+            correct = false;
+            addElement();
             getCoordinates();
         };
 
