@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}CrowdsourceAccessMap{% endblock %}</title>
+    <meta charset="utf-8">
+    <title>{% block title %}CrowdsourceAccessMap{% endblock %}</title>
+    <title>Light Javascript Table Sorter</title>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <style>
+        table {
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        table#t01 tr:nth-child(even) {
+            background-color: #eee;
+        }
+
+        table#t01 tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        table#t01 th {
+            background-color: black;
+            color: white;
+        }
+    </style>
 </head>
-<body background="../media/background.png"
-  <header>
+<body background="../media/background.png"></body>
+<header>
     <h1>CrowdsourceAccessMap</h1>
     {% if user.is_authenticated %}
-      Hi {{ user.username }}!
-      <a href="{% url 'logout' %}">logout</a>
+        Hi {{ user.username }}!
+        <a href="{% url 'logout' %}">logout</a>
     {% else %}
-      <a href="{% url 'login' %}">login</a>
+        <a href="{% url 'login' %}">login</a>
     {% endif %}
     <a href="{% url 'ranking' %}">ranking</a>
     <a href="{% url 'home' %}">home</a>
     {% block head_block %}
     {% endblock %}
-  </header>
-  <main>
+</header>
+<main>
     {% block content %}
     {% endblock %}
-  </main>
+</main>
 </body>
 </html>

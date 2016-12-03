@@ -1,12 +1,24 @@
 {% extends "base.html" %}
-
 {% block content %}
-    <table id="rankTable">
-    {% for user in users %}
-      <tr>
-        <td>{{user.username}}</td>
-        <td>{{user.rank}}</td>
-      </tr>
-    {% endfor %}
-{% endblock %}
+    <section class="container">
 
+        <h2>Leader Board</h2>
+
+        <table id="rankTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{user.username}}</td>
+                    <td>{{user.rank}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

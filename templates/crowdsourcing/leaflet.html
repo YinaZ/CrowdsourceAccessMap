@@ -6,50 +6,65 @@
     {% leaflet_js %}
     {% leaflet_css %}
     {% csrf_token %}
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'/>
 
     <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet'/>
 
     <!--Add draw plugin -->
-    <link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' />
+    <link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css'/>
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
 
     <!--Add Bing.js -->
-    <script src="https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Bing.js"></script>    
+    <script src="https://cdn.rawgit.com/shramov/leaflet-plugins/master/layer/tile/Bing.js"></script>
 
     <!--Add jquery.js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
 
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
 {% endblock %}
 
 {% block content %}
-	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-	<button id="getQuestion">Get next question</button>
-	<button id="showLocation">Show Bounds</button>
-        <button id="badIntersection">Marker is not on an intersection</button>
+    <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+    <button id="getQuestion" class="btn btn-primary btn-lg">Get next question</button>
+    <button id="showLocation" class="btn btn-primary btn-lg">Show Bounds</button>
+    <button id="badIntersection" class="btn btn-primary btn-lg">Marker is not on an intersection</button>
+    <button id="drawCrossing" class="btn btn-primary btn-lg">Draw crossing</button>
 
-        <script src="{% static "scripts.js" %}"></script>
-	<script>
+
+    <script src="{% static "scripts.js" %}"></script>
+    <script>
         var correct;
         var sidewalkData;
         var input;
         var intersection_id;
-	map = new L.Map('map', {center: new L.LatLng(47.6553, -122.3035), zoom: 15 });
-	var imagerySet = "Aerial"; // AerialWithLabels | Birdseye | BirdseyeWithLabels | Road
+        map = new L.Map('map', {center: new L.LatLng(47.6553, -122.3035), zoom: 15});
+        var imagerySet = "Aerial"; // AerialWithLabels | Birdseye | BirdseyeWithLabels | Road
         var bing = new L.BingLayer("AkErn6IFlYKIm4Mp34p-ayPl_zTVk6LoUyp4J9HftaB_KJdDkBV6MmOV4eWKciNF", {type: imagerySet});
         map.addLayer(bing);
         var dataurl = '{% url "data" %}';
         var marker = L.marker([0, 0]).addTo(map);
-	//fetch(dataurl)
+        //fetch(dataurl)
         //  .then(function(resp) {
         //    return resp.json();
         //   })
         //   .then(function(data) {
         //    L.geoJson(data).addTo(map);
-      	//  });
+        //  });
 
-	var drawnItems = new L.FeatureGroup();
+        var drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
 
         // Set the title to show on the polygon button
@@ -60,7 +75,10 @@
             position: 'topright',
             draw: {
                 polyline: {
-                    metric: true
+                    metric: true,
+                    shapeOptions: {
+                        color: "yellow"
+                    }
                 },
                 polygon: false,
                 circle: false,
@@ -73,6 +91,15 @@
             }
         });
         map.addControl(drawControl);
+
+        // Define you draw handler somewhere where you click handler can access it. N.B. pass any draw options into the handler
+        var polyline_options = {
+            metric: true,
+            shapeOptions: {
+                color: "yellow"
+            }
+        };
+        var polylineDrawer = new L.Draw.Polyline(map, polyline_options);
 
         map.on('draw:created', function (e) {
             var type = e.layerType,
@@ -87,13 +114,14 @@
             correct = true;
             addElement();
 
+            layer.addTo(map);
         });
 
-        map.on('draw:deleted', function(e) {
+        map.on('draw:deleted', function (e) {
             console.log("something was deleted; showing draw control");
             var layers = e.layers;
             var countOfDeletedLayers = 0;
-            layers.eachLayer(function(layer) {
+            layers.eachLayer(function (layer) {
                 countOfDeletedLayers++;
                 var geoJson = layer.toGeoJSON();
                 var geo = geoJson.geometry;
@@ -116,10 +144,15 @@
             getCoordinates();
         };
 
+        L.DomUtil.get('drawCrossing').onclick = function () {
+             polylineDrawer.enable();
+        };
+
+
         L.DomUtil.get('showLocation').onclick = function () {
             console.log("SW: " + map.getBounds().getSouthWest());
             console.log("NE: " + map.getBounds().getNorthEast());
-			
+
         };
     </script>
 {% endblock %}
