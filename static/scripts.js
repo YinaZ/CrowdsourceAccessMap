@@ -1,27 +1,27 @@
-function badIntersection(){
-        var xhr = new XMLHttpRequest();
-        var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-        xhr.open('POST', '../badIntersection/', true);
-        xhr.setRequestHeader("X-CSRFToken", csrf_token);
-        xhr.setRequestHeader('intersection', intersection_id);
-        xhr.send();
-}
-
-function addElement(json){
+function addElement(){
         var xhr = new XMLHttpRequest();
         var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
         xhr.open('POST', '../addElement/', true);
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
-        xhr.setRequestHeader('intersection', intersection_id);
-        xhr.send(json);
+        var body = new Object();
+        if (correct) {
+                body.geom = input;
+                body.correct = 1;
+        } else {
+                body.correct = 0;
+        }
+        body.sidewalks = JSON.stringify(sidewalkData);
+        body.intersection = intersection_id;
+        xhr.send(JSON.stringify(body));
 }
-function deleteElement(json){
+
+function deleteElement(){
         var xhr = new XMLHttpRequest();
         var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
         xhr.open('POST', '../deleteElement/', true);
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
         xhr.setRequestHeader('intersection', intersection_id);
-        xhr.send(json);
+        xhr.send(input);
 }
 
 function getCoordinates() {
@@ -56,6 +56,7 @@ function changeCoordinates(json){
         req.done(function (data) {
         // When the data comes back, update the sidewalks layer
             sidewalks.addData(data);
+            sidewalkData = sidewalks.toGeoJSON();
             sidewalks.setStyle(sidewalksStyle);
         });
 
